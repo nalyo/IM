@@ -24,7 +24,7 @@ if (WIN32)
         COMMENT "Copying pthreadV2.dll to output directory"
     )
 else()
-    target_link_libraries(Client PRIVATE pthread)
+    target_link_libraries(Client PRIVATE Threads::Threads)
 endif()
 
 target_compile_options(Client PRIVATE
