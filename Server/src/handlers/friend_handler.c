@@ -78,26 +78,13 @@ void handle_friend(client_info_t* client,
         const char* strerror = im_strerror(err);
         printf("[FRIEND] list: %s, result: %s \n", client->username, strerror);
 
-        if (err != IM_ERR_OK) {
-            server_send_packet(
-                client->fd,
-                IM_MAIN_FRIEND,
-                IM_FRIEND_LIST,
-                IM_FLAG_RESPONSE,
-                err,
-                NULL,
-                0
-            );
-            break;
-        }
-
         // 返回给客户端
         server_send_packet(
             client->fd,
             IM_MAIN_FRIEND,
             IM_FRIEND_LIST,
             IM_FLAG_RESPONSE,
-            IM_ERR_OK,
+            err,
             flist,
             buf_size
         );

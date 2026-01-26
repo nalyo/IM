@@ -168,7 +168,7 @@ im_err_t get_friend_list(client_info_t* client, im_friend_list_t** out_list, siz
         *out_list = NULL;
         *out_size = 0;
         pthread_mutex_unlock(&friend_lock);
-        return IM_ERR_OK;
+        return IM_ERR_NO_FRIENDS;
     }
 
     // ·ÖÅä·µ»ØÄÚ´æ

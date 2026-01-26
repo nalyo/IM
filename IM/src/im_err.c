@@ -18,7 +18,8 @@ const char* im_strerror(im_err_t err)
     case IM_ERR_FRIEND_EXISTS: return "Friend already exists";
     case IM_ERR_FRIEND_NOT_FOUND: return "Friend not found";
     case IM_ERR_FRIEND_SELF_ADD: return "Cannot add yourself as friend";
-    case IM_ERR_NOT_FRIEND: return "Not Friend";
+    case IM_ERR_NOT_FRIEND: return "Not friend";
+    case IM_ERR_NO_FRIENDS: return "You have no friends";
 
         /* ========== Chat 3000+ ========== */
     case IM_ERR_CHAT_OFFLINE: return "Target user is offline";
