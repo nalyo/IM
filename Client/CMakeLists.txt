@@ -6,27 +6,14 @@ add_executable(Client ${CLIENT_SOURCES})
 target_include_directories(Client PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/IM/src
-if (WIN32)
-    ${CMAKE_SOURCE_DIR}/vendor/pthread/include
-endif()
 )
 
 target_link_libraries(Client PRIVATE IM)
 
-target_compile_options(Client PRIVATE
-    $<$<C_COMPILER_ID:MSVC>:/W4>
-    $<$<C_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
-)
-# 设置可执行文件输出目录
-set_target_properties(Client PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Client"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Client"
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Client"
-)
-
 # 跨平台库
 if (WIN32)
     target_compile_definitions(Client PRIVATE HAVE_STRUCT_TIMESPEC WIN32 _WIN32)
+    target_include_directories(Client PRIVATE "${CMAKE_SOURCE_DIR}/vendor/pthread/include")
     target_link_libraries(Client PRIVATE ws2_32)
     target_link_libraries(Client PRIVATE "${CMAKE_SOURCE_DIR}/vendor/pthread/lib/x86/pthreadVC2.lib")
         add_custom_command(TARGET Client POST_BUILD
@@ -39,3 +26,14 @@ if (WIN32)
 else()
     target_link_libraries(Client PRIVATE pthread)
 endif()
+
+target_compile_options(Client PRIVATE
+    $<$<C_COMPILER_ID:MSVC>:/W4>
+    $<$<C_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
+)
+# 设置可执行文件输出目录
+set_target_properties(Client PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Client"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Client"
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Client"
+)
