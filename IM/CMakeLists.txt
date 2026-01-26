@@ -14,7 +14,7 @@ if (WIN32)
     target_link_libraries(IM PUBLIC ws2_32)
 else()
     find_package(Threads REQUIRED)
-    target_link_libraries(Client PUBLIC Threads::Threads)
+    target_link_libraries(IM PUBLIC Threads::Threads)
 endif()
 # ±àÒë¾¯¸æ
 target_compile_options(IM PRIVATE
