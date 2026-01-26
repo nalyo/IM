@@ -6,6 +6,9 @@
 *.sln.docstates
 *.VC.db
 *.VC.VC.opendb
+*.vcxproj
+*.vcxproj.filters
+*.sln
 
 # ===== Build output =====
 build/

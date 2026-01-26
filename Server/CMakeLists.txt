@@ -11,7 +11,10 @@ target_include_directories(Server PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/IM/src
     ${CMAKE_SOURCE_DIR}/vendor/sqlite/include
+    
+if (WIN32)
     ${CMAKE_SOURCE_DIR}/vendor/pthread/include
+endif()
 )
 
 target_link_libraries(Server PRIVATE IM)
