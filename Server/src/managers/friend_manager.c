@@ -6,6 +6,8 @@
 #include <string.h>
 #include <pthread.h>
 #include <dao/user_dao.h>
+#include <stddef.h>
+
 
 /* 简单全局锁保护链表 + 数据库操作，保证线程安全 */
 static pthread_mutex_t friend_lock = PTHREAD_MUTEX_INITIALIZER;
