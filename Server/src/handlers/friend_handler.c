@@ -20,7 +20,11 @@ void handle_friend(client_info_t* client,
     case IM_FRIEND_ADD: {
         const char* friend_name = (const char*)body;
         // 调用 Manager 层
-        im_err_t err = add_friend(client, friend_name);
+        im_err_t err;
+        if (client->logged_in)
+            err = add_friend(client, friend_name);
+        else
+            err = IM_ERR_USER_NOT_LOGGED_IN;
         const char* strerror = im_strerror(err);
         printf("[FRIEND] add: %s, result: %s \n", client->username, strerror);
 
@@ -46,7 +50,11 @@ void handle_friend(client_info_t* client,
         const char* friend_name = (const char*)body;
 
         // 调用 Manager 层
-        im_err_t err = remove_friend(client, friend_name);
+        im_err_t err;
+        if (client->logged_in)
+            err = remove_friend(client, friend_name);
+        else
+            err = IM_ERR_USER_NOT_LOGGED_IN;
         const char* strerror = im_strerror(err);
         printf("[FRIEND] remove: %s, result: %s \n", client->username, strerror);
 
@@ -73,8 +81,12 @@ void handle_friend(client_info_t* client,
         im_friend_list_t* flist = NULL;
         size_t buf_size = 0;
 
+        im_err_t err;
+        if (client->logged_in)
+            get_friend_list(client, &flist, &buf_size);
+        else
+            err = IM_ERR_USER_NOT_LOGGED_IN;
         // 调用 Manager 层获取好友列表（包含在线状态）
-        im_err_t err = get_friend_list(client, &flist, &buf_size);
         const char* strerror = im_strerror(err);
         printf("[FRIEND] list: %s, result: %s \n", client->username, strerror);
 
