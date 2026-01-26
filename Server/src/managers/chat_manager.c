@@ -1,6 +1,7 @@
 #include "chat_manager.h"
 #include "dao/chat_dao.h"
 #include "dao/user_dao.h"
+#include "dao/friend_dao.h"
 #include "managers/user_manager.h"
 #include "send/send.h"
 #include <stdio.h>
