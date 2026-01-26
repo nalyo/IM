@@ -1,5 +1,6 @@
 #include "friend_dao.h"
 #include "db.h"
+#include <stddef.h>
 #include <sqlite3.h>
 
 int friend_add(int user_id, int friend_id)
