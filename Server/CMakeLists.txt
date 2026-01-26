@@ -18,7 +18,7 @@ target_link_libraries(Server PRIVATE IM)
 # ¿çÆ½Ì¨¿â
 if (WIN32)
     target_compile_definitions(Server PRIVATE HAVE_STRUCT_TIMESPEC WIN32 _WIN32)
-    target_include_directories(Client PRIVATE "${CMAKE_SOURCE_DIR}/vendor/pthread/include")
+    target_include_directories(Server PRIVATE "${CMAKE_SOURCE_DIR}/vendor/pthread/include")
     target_link_libraries(Server PRIVATE ws2_32)
     target_link_libraries(Server PRIVATE "${CMAKE_SOURCE_DIR}/vendor/pthread/lib/x86/pthreadVC2.lib")
         add_custom_command(TARGET Server POST_BUILD
