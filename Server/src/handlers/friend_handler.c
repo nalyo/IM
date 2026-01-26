@@ -83,7 +83,7 @@ void handle_friend(client_info_t* client,
 
         im_err_t err;
         if (client->logged_in)
-            get_friend_list(client, &flist, &buf_size);
+            err = get_friend_list(client, &flist, &buf_size);
         else
             err = IM_ERR_USER_NOT_LOGGED_IN;
         // 调用 Manager 层获取好友列表（包含在线状态）
