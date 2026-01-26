@@ -29,6 +29,8 @@ extern "C" {
 #define im_mutex_unlock(m) LeaveCriticalSection(m)
 #define im_mutex_destroy(m) DeleteCriticalSection(m)
 #else
+#include <stdint.h>   // uintptr_t
+#include <signal.h>   // sigaction, sigemptyset, SIGINT
 #include <pthread.h>
 	typedef pthread_mutex_t im_mutex_t;
 #define im_mutex_init(m) pthread_mutex_init(m, NULL)
