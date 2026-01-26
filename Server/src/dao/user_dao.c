@@ -3,6 +3,7 @@
 #include "platform/im_tools.h"
 #include <sqlite3.h>
 #include <string.h>
+#include <stdio.h>
 
 int dao_user_create(const char* username, const char* password)
 {
