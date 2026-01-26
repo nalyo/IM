@@ -24,7 +24,7 @@ set_target_properties(Client PROPERTIES
 
 # ¿çÆ½Ì¨¿â
 if (WIN32)
-    target_compile_definitions(Client PRIVATE HAVE_STRUCT_TIMESPEC WIN32)
+    target_compile_definitions(Client PRIVATE HAVE_STRUCT_TIMESPEC WIN32 _WIN32)
     target_link_libraries(Client PRIVATE ws2_32)
     target_link_libraries(Client PRIVATE "${CMAKE_SOURCE_DIR}/vendor/pthread/lib/x86/pthreadVC2.lib")
         add_custom_command(TARGET Client POST_BUILD
