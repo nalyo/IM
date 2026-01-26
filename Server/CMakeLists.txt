@@ -29,6 +29,7 @@ if (WIN32)
         COMMENT "Copying pthreadV2.dll to output directory"
     )
 else()
+    find_package(Threads REQUIRED)
     target_link_libraries(Server PRIVATE Threads::Threads)
 endif()
 
