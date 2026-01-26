@@ -1,0 +1,29 @@
+#include "client_dispatch.h"
+#include "handlers/handlers.h"
+#include <stdio.h>
+
+void client_dispatch(client_app_t* app, const im_msg_hdr_t* hdr, const void* body)
+{
+    switch (hdr->main_cmd) {
+
+    case IM_MAIN_USER:
+        handle_account(app, hdr, body);
+        break;
+
+    case IM_MAIN_FRIEND:
+        handle_friend(app, hdr, body);
+        break;
+
+    case IM_MAIN_CHAT:
+        handle_chat(hdr, body);
+        break;
+
+    case IM_MAIN_SYSTEM:
+        handle_system(hdr->sub_cmd, body);
+        break;
+
+    default:
+        printf("[WARN] unknown main_cmd: %u\n", hdr->main_cmd);
+        break;
+    }
+}
