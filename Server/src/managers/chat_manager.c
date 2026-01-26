@@ -15,6 +15,7 @@ im_err_t chat_send_message(client_info_t* from_client, const char* to_username, 
 
     /* ---------------- 保存消息到数据库 ---------------- */
     client_info_t* to_client = find_online_client(to_username);
+    
     int to_id = 0;
 
     if (to_client) {
@@ -29,6 +30,9 @@ im_err_t chat_send_message(client_info_t* from_client, const char* to_username, 
         to_id = user.id;
     }
 
+    if (!friend_is_friend(from_client->user_id, to_id)) {
+        return IM_ERR_NOT_FRIEND;
+    }
     if (message_save(from_client->user_id, to_id, msg) != 0) {
         return IM_ERR_DB_FAILED; // 数据库错误
     }

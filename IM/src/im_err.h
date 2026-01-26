@@ -19,6 +19,7 @@ extern "C" {
         IM_ERR_FRIEND_EXISTS = 2001,
         IM_ERR_FRIEND_NOT_FOUND,
         IM_ERR_FRIEND_SELF_ADD,
+        IM_ERR_NOT_FRIEND,
 
         /* ========== Chat 3000+ ========== */
         IM_ERR_CHAT_OFFLINE = 3001,

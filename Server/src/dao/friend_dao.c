@@ -53,3 +53,19 @@ int friend_list(int user_id, friend_iter_cb cb, void* arg)
     sqlite3_finalize(stmt);
     return 0;
 }
+
+int friend_is_friend(int user_id, int friend_id)
+{
+    const char* sql =
+        "SELECT 1 FROM friends WHERE user_id=? AND friend_id=? LIMIT 1";
+
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(db_get(), sql, -1, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, user_id);
+    sqlite3_bind_int(stmt, 2, friend_id);
+
+    int rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    return rc == SQLITE_ROW ? 1 : 0;
+}
