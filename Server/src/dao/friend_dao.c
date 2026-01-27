@@ -1,6 +1,7 @@
 #include "friend_dao.h"
 #include "db.h"
 #include <stddef.h>
+#include <stdio.h>
 #include <sqlite3.h>
 
 int friend_add_bidirectional(int user_id, int friend_id)
