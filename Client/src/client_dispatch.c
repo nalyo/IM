@@ -5,7 +5,7 @@
 
 void client_dispatch(client_app_t* app, const im_msg_hdr_t* hdr, const void* body)
 {
-    client_plugin_dispatch_message(app, hdr, body);
+    client_plugin_dispatch_message(app->g_plugin, app, hdr, body);
     switch (hdr->main_cmd) {
 
     case IM_MAIN_USER:

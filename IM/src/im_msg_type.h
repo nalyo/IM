@@ -34,5 +34,7 @@ typedef enum {
 
 typedef enum {
     IM_SYS_HELP = 1,
-    IM_SYS_QUIT = 2
+    IM_SYS_QUIT = 2,
+    IM_SYS_PLUGIN_LOAD = 3,
+    IM_SYS_PLUGIN_UNLOAD = 4
 } im_system_cmd_t;

@@ -1,4 +1,5 @@
 #include "client_plugin_loader.h"
+#include "client_app.h"
 #include <stdio.h>
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -17,7 +18,7 @@ typedef void* lib_handle;
 
 typedef client_plugin_t* (*plugin_init_func)();
 
-int load_plugin(const char* path) {
+int load_plugin(const char* path, client_app_t* app) {
     lib_handle handle = load_library(path);
     if (!handle) {
 #if defined(_WIN32) || defined(_WIN64)
@@ -42,7 +43,7 @@ int load_plugin(const char* path) {
         return -1;
     }
 
-    client_plugin_register(plugin);
+    client_plugin_register(&app->g_plugin, plugin);
     printf("Loaded plugin: %s\n", plugin->name);
 
     return 0;
@@ -55,7 +56,7 @@ int load_plugin(const char* path) {
 #include <sys/stat.h>
 #endif
 
-void load_all_plugins(const char* subdir) {
+void load_all_plugins(const char* subdir, client_app_t* app) {
 #if defined(_WIN32) || defined(_WIN64)
     char exe_path[MAX_PATH];
     // 获取程序（EXE）路径
@@ -84,7 +85,7 @@ void load_all_plugins(const char* subdir) {
     do {
         char full_path[MAX_PATH];
         snprintf(full_path, MAX_PATH, "%s\\%s", plugin_dir, fd.cFileName);
-        load_plugin(full_path);
+        load_plugin(full_path, app);
     } while (FindNextFileA(h, &fd));
 
     FindClose(h);

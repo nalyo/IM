@@ -38,6 +38,7 @@ client_plugin_t* plugin_init() {
         .on_input = NULL,
         .on_start = NULL,
         .on_stop = NULL,
+        .enabled = 0,
         .next = NULL
     };
     return &plugin;

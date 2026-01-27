@@ -23,13 +23,14 @@ typedef struct client_plugin {
     void (*on_input)(client_app_t* app, const char* input);
     void (*on_start)(client_app_t* app);
     void (*on_stop)(client_app_t* app);
-
+    int enabled;
     struct client_plugin* next;
 }client_plugin_t;
 
-void client_plugin_register(client_plugin_t* plugin);
-
-void client_plugin_dispatch_message(client_app_t* app, const im_msg_hdr_t* hdr, const void* body);
-void client_plugin_dispatch_input(client_app_t* app, const char* input);
+void client_plugin_register(client_plugin_t** head, client_plugin_t* plugin);
+void client_plugin_enable(client_plugin_t* plugin);
+void client_plugin_disable(client_plugin_t* plugin);
+void client_plugin_dispatch_message(client_plugin_t* head, client_app_t* app, const im_msg_hdr_t* hdr, const void* body);
+void client_plugin_dispatch_input(client_plugin_t* head, client_app_t* app, const char* input);
 
 #endif

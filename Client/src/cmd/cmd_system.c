@@ -1,6 +1,62 @@
 #include "cmd_common.h"
 #include "im_protocol.h"
 #include <stdio.h>
+static int cmd_plugin_load(client_app_t* app, const char* args)
+{
+    char target[IM_MAX_USERNAME] = { 0 };
+    const char* p = args;
+
+    if (read_token(&p, target, sizeof(target)) < 0) {
+        printf("usage: plugin_load <plugin>\n");
+        return -1;
+    }
+
+    client_plugin_t* plugin = app->g_plugin;
+    while (plugin) {
+        if (strcmp(plugin->name, target) == 0) {
+            if (plugin->enabled) {
+                printf("Plugin '%s' is already enabled.\n", plugin->name);
+                return 0;
+            }
+            plugin->enabled = 1;
+            if (plugin->on_start) plugin->on_start(app);
+            printf("Plugin '%s' enabled.\n", plugin->name);
+            return 0;
+        }
+        plugin = plugin->next;
+    }
+    printf("Plugin '%s' not found.\n", target);
+    return -1;
+}
+
+static int cmd_plugin_unload(client_app_t* app, const char* args)
+{
+
+    char target[IM_MAX_USERNAME] = { 0 };
+    const char* p = args;
+
+    if (read_token(&p, target, sizeof(target)) < 0) {
+        printf("usage: plugin_unload <plugin>\n");
+        return -1;
+    }
+
+    client_plugin_t* plugin = app->g_plugin;
+    while (plugin) {
+        if (strcmp(plugin->name, target) == 0) {
+            if (!plugin->enabled) {
+                printf("Plugin '%s' is already disabled.\n", plugin->name);
+                return 0;
+            }
+            if (plugin->on_stop) plugin->on_stop(app);
+            plugin->enabled = 0;
+            printf("Plugin '%s' disabled.\n", plugin->name);
+            return 0;
+        }
+        plugin = plugin->next;
+    }
+    printf("Plugin '%s' not found.\n", target);
+    return -1;
+}
 
 static int cmd_help(client_app_t* app, const char* args)
 {
@@ -38,6 +94,8 @@ static int cmd_quit(client_app_t* app, const char* args)
 }
 
 const cmd_entry_t g_system_cmds[] = {
+    { "plugin_load", cmd_plugin_load, IM_SYS_PLUGIN_LOAD },
+    { "plugin_unload", cmd_plugin_unload, IM_SYS_PLUGIN_UNLOAD },
     { "help", cmd_help, IM_SYS_HELP },
     { "quit", cmd_quit, IM_SYS_QUIT },
 };

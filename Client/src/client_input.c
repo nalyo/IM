@@ -41,7 +41,7 @@ void client_handle_input(client_app_t* app, const char* line)
     if (read_token(&p, cmd, sizeof(cmd)) < 0)
         return;
 
-    client_plugin_dispatch_input(app, line);
+    client_plugin_dispatch_input(app->g_plugin, app, line);
     if (dispatch_cmd(app, cmd, p, g_account_cmds, g_account_cmds_count) == 0) return;
     if (dispatch_cmd(app, cmd, p, g_chat_cmds, g_chat_cmds_count) == 0) return;
     if (dispatch_cmd(app, cmd, p, g_friend_cmds, g_friend_cmds_count) == 0) return;

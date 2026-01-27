@@ -14,6 +14,7 @@ extern "C" {
         int logged_in;
         char username[32];
 
+        client_plugin_t* g_plugin;
         client_plugin_cb_t g_plugin_cb;
     }client_app_t;
 

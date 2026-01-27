@@ -91,7 +91,7 @@ int client_app_start(client_app_t* app,
     
     app->g_plugin_cb.send_message = client_send_packet;
     // 动态加载插件，跨平台
-    load_all_plugins("plugins");
+    load_all_plugins("plugins", app);
 
     im_thread_t tid_send, tid_recv;
     im_thread_create(&tid_send, client_send_thread, app);
