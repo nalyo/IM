@@ -3,6 +3,7 @@
 #include "im_protocol.h"
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 static void auto_reply_on_message(client_app_t* app,
     const im_msg_hdr_t* hdr,
