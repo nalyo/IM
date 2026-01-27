@@ -4,9 +4,12 @@
 #include "client_input.h"
 #include <stdio.h>
 #include <string.h>
+#include "send/send.h"
 #include "platform/im_socket.h"
 #include "platform/im_thread.h"
 #include "client_dispatch.h"
+#include "client_plugin_loader.h"
+
 
 static void print_prompt(client_app_t* app)
 {
@@ -85,6 +88,10 @@ int client_app_start(client_app_t* app,
     app->sock = client_connect(server_ip, port);
     if (!IM_SOCK_VALID(app->sock))
         return IM_ERR_NET_SOCKET_CONNECT;
+    
+    app->g_plugin_cb.send_message = client_send_packet;
+    // 动态加载插件，跨平台
+    load_all_plugins("plugins");
 
     im_thread_t tid_send, tid_recv;
     im_thread_create(&tid_send, client_send_thread, app);

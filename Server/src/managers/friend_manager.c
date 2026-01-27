@@ -71,7 +71,7 @@ im_err_t add_friend(struct client_info_t* client, const char* friend_name)
     }
 
     // 更新数据库
-    if (friend_add(client->user_id, user.id) != 0) {
+    if (friend_add_bidirectional(client->user_id, user.id) != 0) {
         pthread_mutex_unlock(&friend_lock);
         return IM_ERR_DB_FAILED;
     }
@@ -115,7 +115,7 @@ im_err_t remove_friend(struct client_info_t* client, const char* friend_name)
     }
 
     // 删除数据库记录
-    if (friend_delete(client->user_id, user.id) != 0) {
+    if (friend_add_bidirectional(client->user_id, user.id) != 0) {
         pthread_mutex_unlock(&friend_lock);
         return IM_ERR_DB_FAILED;
     }

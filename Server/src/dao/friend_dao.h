@@ -1,7 +1,7 @@
 #pragma once
 
-int friend_add(int user_id, int friend_id);
-int friend_delete(int user_id, int friend_id);
+int friend_add_bidirectional(int user_id, int friend_id);
+int friend_delete_bidirectional(int user_id, int friend_id);
 
 /* ±éÀúºÃÓÑ */
 typedef void (*friend_iter_cb)(const char* name, int online, void* arg);
