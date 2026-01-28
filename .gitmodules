@@ -4,3 +4,6 @@
 [submodule "Plugin/curl"]
 	path = Plugin/curl
 	url = https://github.com/curl/curl.git
+[submodule "vendor/logc"]
+	path = vendor/logc
+	url = https://github.com/nalyo/log.c.git
