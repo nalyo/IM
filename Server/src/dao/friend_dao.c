@@ -1,5 +1,5 @@
 #include "friend_dao.h"
-#include "db.h"
+#include "db/db.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <sqlite3.h>

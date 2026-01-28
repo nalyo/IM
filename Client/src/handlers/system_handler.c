@@ -1,4 +1,5 @@
 #include "handlers.h"
+#include "log.h"
 #include <stdio.h>
 
 void handle_system(uint16_t sub_cmd, const void* body)
@@ -7,22 +8,22 @@ void handle_system(uint16_t sub_cmd, const void* body)
 
     case IM_NET_OK: {
         const im_ok_t* ok = (const im_ok_t*)body;
-        printf("[OK] %s\n", ok->resp_msg);
+        log_info("[OK] %s", ok->resp_msg);
         break;
     }
 
     case IM_NET_ERROR: {
         const im_error_t* err = (const im_error_t*)body;
-        printf("[ERROR %d] %s\n", err->err_code, err->err_msg);
+        log_info("[ERROR %d] %s", err->err_code, err->err_msg);
         break;
     }
 
     case IM_NET_KICK:
-        printf("[SYSTEM] you have been kicked\n");
+        log_info("[SYSTEM] you have been kicked");
         break;
 
     default:
-        printf("[WARN] unknown system sub_cmd: %u\n", sub_cmd);
+        log_warn("unknown system sub_cmd: %u", sub_cmd);
         break;
     }
 }

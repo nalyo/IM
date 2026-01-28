@@ -1,19 +1,14 @@
 #include "cmd_common.h"
 #include "utils/parse.h"
 #include "send/send.h"
-#include <stdio.h>
 #include "im_protocol.h"
-
-#include "cmd_common.h"
-#include "utils/parse.h"
-#include "send/send.h"
+#include "log.h"
 #include <stdio.h>
-#include "im_protocol.h"
 
 static int cmd_register(client_app_t* app, const char* args)
 {
     if (app->logged_in) {
-        printf("already logged in as %s, please logout first\n", app->username);
+        log_info("already logged in as %s, please logout first", app->username);
         return 0;
     }
 
@@ -22,7 +17,7 @@ static int cmd_register(client_app_t* app, const char* args)
 
     if (read_token(&p, user, sizeof(user)) < 0 ||
         read_token(&p, pass, sizeof(pass)) < 0) {
-        printf("usage: register <user> <pass>\n");
+        log_info("usage: register <user> <pass>");
         return -1;
     }
 
@@ -40,7 +35,7 @@ static int cmd_register(client_app_t* app, const char* args)
 static int cmd_login(client_app_t* app, const char* args)
 {
     if (app->logged_in) {
-        printf("already logged in as %s\n", app->username);
+        log_info("already logged in as %s", app->username);
         return 0;
     }
 
@@ -49,7 +44,7 @@ static int cmd_login(client_app_t* app, const char* args)
 
     if (read_token(&p, user, sizeof(user)) < 0 ||
         read_token(&p, pass, sizeof(pass)) < 0) {
-        printf("usage: login <user> <pass>\n");
+        log_info("usage: login <user> <pass>");
         return -1;
     }
 
@@ -70,7 +65,7 @@ static int cmd_logout(client_app_t* app, const char* args)
     (void)args; // ºöÂÔ²ÎÊý
 
     if (!app->logged_in) {
-        printf("not logged in\n");
+        log_info("not logged in");
         return 0;
     }
 

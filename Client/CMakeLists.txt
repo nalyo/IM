@@ -5,7 +5,6 @@ add_executable(Client ${CLIENT_SOURCES})
 
 target_include_directories(Client PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/IM/src
 )
 
 target_link_libraries(Client PRIVATE IM)

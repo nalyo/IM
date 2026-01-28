@@ -1,5 +1,6 @@
 #include "cmd_common.h"
 #include "im_protocol.h"
+#include "log.h"
 #include <stdio.h>
 static int cmd_plugin_load(client_app_t* app, const char* args)
 {
@@ -7,7 +8,7 @@ static int cmd_plugin_load(client_app_t* app, const char* args)
     const char* p = args;
 
     if (read_token(&p, target, sizeof(target)) < 0) {
-        printf("usage: plugin_load <plugin>\n");
+        log_info("usage: plugin_load <plugin>");
         return -1;
     }
 
@@ -15,17 +16,17 @@ static int cmd_plugin_load(client_app_t* app, const char* args)
     while (plugin) {
         if (strcmp(plugin->name, target) == 0) {
             if (plugin->enabled) {
-                printf("Plugin '%s' is already enabled.\n", plugin->name);
+                log_info("Plugin '%s' is already enabled.", plugin->name);
                 return 0;
             }
             plugin->enabled = 1;
             if (plugin->on_start) plugin->on_start(app);
-            printf("Plugin '%s' enabled.\n", plugin->name);
+            log_info("Plugin '%s' enabled.", plugin->name);
             return 0;
         }
         plugin = plugin->next;
     }
-    printf("Plugin '%s' not found.\n", target);
+    log_info("Plugin '%s' not found.", target);
     return -1;
 }
 
@@ -36,7 +37,7 @@ static int cmd_plugin_unload(client_app_t* app, const char* args)
     const char* p = args;
 
     if (read_token(&p, target, sizeof(target)) < 0) {
-        printf("usage: plugin_unload <plugin>\n");
+        log_info("usage: plugin_unload <plugin>");
         return -1;
     }
 
@@ -44,25 +45,25 @@ static int cmd_plugin_unload(client_app_t* app, const char* args)
     while (plugin) {
         if (strcmp(plugin->name, target) == 0) {
             if (!plugin->enabled) {
-                printf("Plugin '%s' is already disabled.\n", plugin->name);
+                log_info("Plugin '%s' is already disabled.", plugin->name);
                 return 0;
             }
             if (plugin->on_stop) plugin->on_stop(app);
             plugin->enabled = 0;
-            printf("Plugin '%s' disabled.\n", plugin->name);
+            log_info("Plugin '%s' disabled.", plugin->name);
             return 0;
         }
         plugin = plugin->next;
     }
-    printf("Plugin '%s' not found.\n", target);
+    log_info("Plugin '%s' not found.", target);
     return -1;
 }
 
 static int cmd_help(client_app_t* app, const char* args)
 {
     (void)app; (void)args;
+    log_info("Available commands:");
     printf(
-        "Available commands:\n"
         "  User commands:\n"
         "    register <username> <password>   - Register a new account\n"
         "    login    <username> <password>   - Login with your account\n"
@@ -88,7 +89,7 @@ static int cmd_help(client_app_t* app, const char* args)
 static int cmd_quit(client_app_t* app, const char* args)
 {
     (void)args;
-    printf("Exiting...\n");
+    log_info("Exiting...");
     client_app_stop(app);
     return 0;
 }

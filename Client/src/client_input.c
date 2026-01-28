@@ -1,6 +1,7 @@
 #include "client_input.h"
 #include "utils/parse.h"
 #include "client_plugin.h"
+#include "log.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -47,5 +48,5 @@ void client_handle_input(client_app_t* app, const char* line)
     if (dispatch_cmd(app, cmd, p, g_friend_cmds, g_friend_cmds_count) == 0) return;
     if (dispatch_cmd(app, cmd, p, g_system_cmds, g_system_cmds_count) == 0) return;
 
-    printf("unknown command: %s\n", cmd);
+    log_warn("unknown command: %s", cmd);
 }

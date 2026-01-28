@@ -1,16 +1,12 @@
 # 自动包含 Server/src 下所有 C 文件
 file(GLOB_RECURSE SERVER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
-# 包含 sqlite3 源文件
-file(GLOB SQLITE_SOURCES "${CMAKE_SOURCE_DIR}/vendor/sqlite/*.c")
-
 add_executable(Server ${SERVER_SOURCES} ${SQLITE_SOURCES})
 
 # 包含头文件路径
 target_include_directories(Server PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/IM/src
-    ${CMAKE_SOURCE_DIR}/vendor/sqlite/include
 )
 
 target_link_libraries(Server PRIVATE IM)

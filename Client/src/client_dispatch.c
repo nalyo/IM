@@ -1,6 +1,7 @@
 #include "client_dispatch.h"
 #include "handlers/handlers.h"
 #include "client_plugin.h"
+#include "log.h"
 #include <stdio.h>
 
 void client_dispatch(client_app_t* app, const im_msg_hdr_t* hdr, const void* body)
@@ -9,7 +10,7 @@ void client_dispatch(client_app_t* app, const im_msg_hdr_t* hdr, const void* bod
     switch (hdr->main_cmd) {
 
     case IM_MAIN_USER:
-        handle_account(app, hdr, body);
+        handle_user(app, hdr, body);
         break;
 
     case IM_MAIN_FRIEND:
@@ -25,7 +26,7 @@ void client_dispatch(client_app_t* app, const im_msg_hdr_t* hdr, const void* bod
         break;
 
     default:
-        printf("[WARN] unknown main_cmd: %u\n", hdr->main_cmd);
+        log_warn("unknown main_cmd: %u", hdr->main_cmd);
         break;
     }
 }

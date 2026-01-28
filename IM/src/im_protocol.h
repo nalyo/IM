@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "platform/im_tools.h"
+#include "utils/im_string.h"
 #include "im_msg_type.h"
 
 #ifdef __cplusplus

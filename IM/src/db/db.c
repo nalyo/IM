@@ -1,6 +1,6 @@
 #include "db.h"
 #include "im_err.h"
-#include "platform/im_tools.h"
+#include "utils/im_string.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -38,16 +38,16 @@ static void get_exe_dir(char* out, size_t size)
 #endif
 }
 
-int db_init(void)
+int db_init(const char* db_name, const char* sqls[], int sql_count)
 {
     char exe_dir[1024];
     get_exe_dir(exe_dir, sizeof(exe_dir));
 
     char db_path[1024];
 #if defined(_WIN32) || defined(_WIN64)
-    snprintf(db_path, sizeof(db_path), "%s\\im_server.db", exe_dir);
+    snprintf(db_path, sizeof(db_path), "%s\\%s", exe_dir, db_name);
 #else
-    snprintf(db_path, sizeof(db_path), "%s/im_server.db", exe_dir);
+    snprintf(db_path, sizeof(db_path), "%s/%s", exe_dir, db_name);
 #endif
 
     if (sqlite3_open(db_path, &g_db) != SQLITE_OK) {
@@ -55,32 +55,8 @@ int db_init(void)
         return IM_ERR_DB_FAILED;
     }
 
-    const char* sqls[] = {
-        "CREATE TABLE IF NOT EXISTS users ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "username TEXT UNIQUE NOT NULL, "
-        "password TEXT NOT NULL, "
-        "created_at DATETIME DEFAULT CURRENT_TIMESTAMP);",
-
-        "CREATE TABLE IF NOT EXISTS friends ("
-        "user_id INTEGER NOT NULL, "
-        "friend_id INTEGER NOT NULL, "
-        "created_at DATETIME DEFAULT CURRENT_TIMESTAMP, "
-        "PRIMARY KEY(user_id, friend_id));",
-
-        "CREATE TABLE IF NOT EXISTS messages ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "from_id INTEGER NOT NULL, "
-        "to_id INTEGER NOT NULL, "
-        "content TEXT NOT NULL, "
-        "timestamp INTEGER NOT NULL DEFAULT 0);",
-
-        "CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);",
-        "CREATE INDEX IF NOT EXISTS idx_friends_user ON friends(user_id);"
-    };
-
     char* errmsg = NULL;
-    for (int i = 0; i < sizeof(sqls) / sizeof(sqls[0]); ++i) {
+    for (int i = 0; i < sql_count; ++i) {
         if (sqlite3_exec(g_db, sqls[i], NULL, NULL, &errmsg) != SQLITE_OK) {
             printf("[DB ERROR] exec failed: %s\nSQL: %s\n", errmsg, sqls[i]);
             sqlite3_free(errmsg);

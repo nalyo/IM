@@ -1,6 +1,6 @@
 #include "chat_dao.h"
-#include "db.h"
-#include "platform/im_tools.h"
+#include "db/db.h"
+#include "utils/im_string.h"
 #include <sqlite3.h>
 #include <string.h>
 #include <stdio.h>

@@ -1,5 +1,6 @@
 #include "client_plugin_loader.h"
 #include "client_app.h"
+#include "log.h"
 #include <stdio.h>
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -22,29 +23,29 @@ int load_plugin(const char* path, client_app_t* app) {
     lib_handle handle = load_library(path);
     if (!handle) {
 #if defined(_WIN32) || defined(_WIN64)
-        printf("LoadLibrary failed\n");
+        log_error("LoadLibrary failed");
 #else
-        printf("dlopen failed: %s\n", dlerror());
+        log_error("dlopen failed: %s", dlerror());
 #endif
         return -1;
     }
 
     plugin_init_func init = (plugin_init_func)get_symbol(handle, "plugin_init");
     if (!init) {
-        printf("Cannot find symbol 'plugin_init'\n");
+        log_error("Cannot find symbol 'plugin_init'");
         close_library(handle);
         return -1;
     }
 
     client_plugin_t* plugin = init();
     if (!plugin) {
-        printf("plugin_init returned NULL\n");
+        log_error("plugin_init returned NULL");
         close_library(handle);
         return -1;
     }
 
     client_plugin_register(&app->g_plugin, plugin);
-    printf("Loaded plugin: %s\n", plugin->name);
+    log_debug("Loaded plugin: %s", plugin->name);
 
     return 0;
 }
@@ -78,7 +79,7 @@ void load_all_plugins(const char* subdir, client_app_t* app) {
     WIN32_FIND_DATAA fd;
     HANDLE h = FindFirstFileA(search_path, &fd);
     if (h == INVALID_HANDLE_VALUE) {
-        printf("No plugins found in: %s\n", plugin_dir);
+        log_debug("No plugins found in: %s", plugin_dir);
         return;
     }
 

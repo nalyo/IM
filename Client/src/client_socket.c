@@ -1,4 +1,5 @@
 #include "client_socket.h"
+#include "log.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -14,7 +15,7 @@ im_sock_t client_connect(const char* ip, uint16_t port)
 
     if (inet_pton(AF_INET, ip, &serv.sin_addr) <= 0)
     {
-        printf("client_connect: invalid ip %s\n", ip);
+        log_error("client_connect: invalid ip %s", ip);
         im_socket_close(s);
         return INVALID_SOCKET;
     }

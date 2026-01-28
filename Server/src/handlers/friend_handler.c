@@ -1,6 +1,6 @@
 #include "handlers.h"
 #include "send/send.h"
-#include "platform/im_tools.h"
+#include "utils/im_string.h"
 #include "managers/user_manager.h"
 #include "managers/friend_manager.h"
 #include <stdio.h>

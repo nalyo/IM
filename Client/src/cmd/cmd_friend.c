@@ -2,6 +2,7 @@
 #include "utils/parse.h"
 #include "send/send.h"
 #include "im_protocol.h"
+#include "log.h"
 #include <stdio.h>
 
 /* --------- ÃÌº”∫√”— --------- */
@@ -9,7 +10,7 @@ static int cmd_friend_add(client_app_t* app, const char* args)
 {
     char name[IM_MAX_USERNAME];
     if (read_rest(&args, name, sizeof(name)) < 0) {
-        printf("usage: fadd <name>\n");
+        log_info("usage: fadd <name>");
         return -1;
     }
 
@@ -28,7 +29,7 @@ static int cmd_friend_del(client_app_t* app, const char* args)
 {
     char name[IM_MAX_USERNAME];
     if (read_rest(&args, name, sizeof(name)) < 0) {
-        printf("usage: fdel <name>\n");
+        log_info("usage: fdel <name>");
         return -1;
     }
 
@@ -46,7 +47,7 @@ static int cmd_friend_del(client_app_t* app, const char* args)
 static int cmd_friend_list(client_app_t* app, const char* args)
 {
     if (args && *args) {
-        printf("usage: flist\n");
+        log_info("usage: flist");
         return -1;
     }
 

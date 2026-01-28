@@ -1,5 +1,6 @@
 #ifdef _WIN32
 #include "im_socket.h"
+#include "log.h"
 #include <stdio.h>
 
 #pragma comment(lib, "Ws2_32.lib")
@@ -9,7 +10,7 @@ int im_net_init(void)
     WSADATA wsa;
     int ret = WSAStartup(MAKEWORD(2, 2), &wsa);
     if (ret != 0) {
-        fprintf(stderr, "WSAStartup failed: %d\n", ret);
+        log_fatal("WSAStartup failed: %d", ret);
         return -1;
     }
     return 0;

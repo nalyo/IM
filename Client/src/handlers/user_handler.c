@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "client_app.h"   // client_app_t
-#include "platform/im_tools.h"
+#include "utils/im_string.h"
+#include "log.h"
 
-void handle_account(client_app_t* app,
+void handle_user(client_app_t* app,
     const im_msg_hdr_t* hdr,
     const void* body)
 {
@@ -15,7 +16,7 @@ void handle_account(client_app_t* app,
     if ((hdr->flags & IM_FLAG_RESPONSE) &&
         hdr->err_code != IM_ERR_OK)
     {
-        printf("[ACCOUNT ERROR] %s\n",
+        log_info("[USER ERROR] %s",
             im_strerror(hdr->err_code));
         return;
     }
@@ -32,12 +33,12 @@ void handle_account(client_app_t* app,
             sizeof(app->username),
             info->username);
 
-        printf("[LOGIN OK] user=%s\n", info->username);
+        log_info("[LOGIN OK] user=%s", info->username);
         break;
     }
 
     case IM_USER_REGISTER:
-        printf("[REGISTER OK]\n");
+        log_info("[REGISTER OK]");
         break;
 
     case IM_USER_LOGOUT:
@@ -45,11 +46,11 @@ void handle_account(client_app_t* app,
         SAFE_STRNCPY(app->username,
             sizeof(app->username),
             "unknown");
-        printf("[LOGOUT OK] success\n");
+        log_info("[LOGOUT OK] success");
         break;
 
     default:
-        printf("[WARN] unknown account sub_cmd: %u\n",
+        log_error("unknown user sub_cmd: %u",
             hdr->sub_cmd);
         break;
     }

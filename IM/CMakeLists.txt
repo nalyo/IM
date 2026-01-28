@@ -1,10 +1,17 @@
 # 自动包含 IM/src 下所有 C 文件
 file(GLOB_RECURSE IM_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
+# 包含 sqlite3 源文件
+file(GLOB SQLITE_SOURCES "${CMAKE_SOURCE_DIR}/vendor/sqlite/*.c")
+
 add_library(IM STATIC ${IM_SOURCES})
 
 target_include_directories(IM PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/vendor/sqlite/include
+)
+target_link_libraries(IM
+    PUBLIC logc
 )
 
 # 跨平台宏和库

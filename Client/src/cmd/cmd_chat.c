@@ -2,6 +2,7 @@
 #include "utils/parse.h"
 #include "send/send.h"
 #include "im_protocol.h"
+#include "log.h"
 #include <stdio.h>
 #include <time.h>
 
@@ -12,7 +13,7 @@ static int cmd_chat(client_app_t* app, const char* args)
 
     if (read_token(&p, to, sizeof(to)) < 0 ||
         read_rest(&p, msg, sizeof(msg)) < 0) {
-        printf("usage: chat <to> <message>\n");
+        log_info("usage: chat <to> <message>");
         return -1;
     }
 
@@ -35,7 +36,7 @@ static int cmd_history(client_app_t* app, const char* args)
     const char* p = args;
 
     if (read_token(&p, target, sizeof(target)) < 0) {
-        printf("usage: history <user>\n");
+        log_info("usage: history <username>");
         return -1;
     }
 

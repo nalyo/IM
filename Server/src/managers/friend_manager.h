@@ -2,7 +2,7 @@
 #include "managers/user_manager.h"
 #include "im_err.h"
 #include "dao/friend_dao.h"
-#include "utils/list.h"
+#include "utils/im_list.h"
 #include <stdint.h>
 
 typedef struct friend_node {

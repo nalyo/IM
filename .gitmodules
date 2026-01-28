@@ -1,0 +1,9 @@
+[submodule "vendor/logc"]
+	path = vendor/logc
+	url = https://github.com/rxi/log.c.git
+[submodule "Plugin/cJSON"]
+	path = Plugin/cJSON
+	url = https://github.com/DaveGamble/cJSON.git
+[submodule "Plugin/curl"]
+	path = Plugin/curl
+	url = https://github.com/curl/curl.git

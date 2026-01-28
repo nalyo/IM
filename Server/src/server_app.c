@@ -7,7 +7,7 @@
 #include "platform/im_socket.h"
 #include "platform/im_thread.h"
 #include "managers/user_manager.h"
-#include "dao/db.h"
+#include "dao/server_db.h"
 #include "server_dispatch.h"
 
 static void* handle_client(void* arg)
@@ -65,7 +65,7 @@ int server_app_start(server_app_t* app, uint16_t port)
     if (!app) return IM_ERR_INVALID_ARG;
     app->running = 1;
 
-    if (db_init("./im_server.db") != IM_ERR_OK)
+    if (server_db_init() != IM_ERR_OK)
         return IM_ERR_DB_FAILED;
     client_manager_init();
 

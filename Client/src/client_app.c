@@ -76,11 +76,6 @@ int client_app_start(client_app_t* app,
         return IM_ERR_INVALID_ARG;
 
     memset(app, 0, sizeof(*app));
-    app->running = 1;
-
-    SAFE_STRNCPY(app->username,
-        sizeof(app->username),
-        "unknown");
 
     if (im_net_init() != IM_ERR_OK)
         return IM_ERR_NET_INIT;
@@ -88,6 +83,11 @@ int client_app_start(client_app_t* app,
     app->sock = client_connect(server_ip, port);
     if (!IM_SOCK_VALID(app->sock))
         return IM_ERR_NET_SOCKET_CONNECT;
+
+    app->running = 1;
+    SAFE_STRNCPY(app->username,
+        sizeof(app->username),
+        "unknown");
     
     app->g_plugin_cb.send_message = client_send_packet;
     // 动态加载插件，跨平台

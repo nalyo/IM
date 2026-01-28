@@ -1,7 +1,7 @@
 #pragma once
 #include "platform/im_socket.h"
-#include "platform/im_tools.h"
-#include "utils/list.h"
+#include "utils/im_string.h"
+#include "utils/im_list.h"
 #include "im_protocol.h"
 #include "im_err.h"
 #include <stdint.h>

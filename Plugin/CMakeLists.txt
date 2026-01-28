@@ -1,9 +1,7 @@
-cmake_minimum_required(VERSION 3.15)
-
 project(AutoReplyPlugin C)
 
 # 自动包含当前目录所有 C 文件
-file(GLOB_RECURSE PLUGIN_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
+file(GLOB PLUGIN_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
 
 # 构建动态库
 add_library(AutoReplyPlugin SHARED ${PLUGIN_SOURCES})
@@ -12,10 +10,38 @@ add_library(AutoReplyPlugin SHARED ${PLUGIN_SOURCES})
 target_include_directories(AutoReplyPlugin PRIVATE
     "${CMAKE_SOURCE_DIR}/Client/src"
     "${CMAKE_SOURCE_DIR}/IM/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cJSON"       
+    "${CMAKE_CURRENT_SOURCE_DIR}/curl/include" 
 )
 
 # 链接 IM 静态库
 target_link_libraries(AutoReplyPlugin PRIVATE IM)
+target_link_libraries(AutoReplyPlugin PRIVATE logc)
+# 添加 cJSON
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/cJSON")
+target_link_libraries(AutoReplyPlugin PRIVATE cjson)
+# ===============================
+# curl 最小化配置（必须在 add_subdirectory 前）
+# ===============================
+
+# 关闭一堆没必要的第三方库
+set(CURL_USE_LIBPSL OFF CACHE BOOL "" FORCE)
+set(CURL_ZLIB OFF CACHE BOOL "" FORCE)
+set(CURL_BROTLI OFF CACHE BOOL "" FORCE)
+set(CURL_ZSTD OFF CACHE BOOL "" FORCE)
+set(USE_NGHTTP2 OFF CACHE BOOL "" FORCE)
+set(USE_LIBIDN2 OFF CACHE BOOL "" FORCE)
+
+# 只要 libcurl，不要 curl.exe
+set(BUILD_CURL_EXE OFF CACHE BOOL "" FORCE)
+
+# Windows 下用系统 TLS
+set(CURL_USE_SCHANNEL ON CACHE BOOL "" FORCE)
+set(CURL_USE_OPENSSL OFF CACHE BOOL "" FORCE)
+# 添加 libcurl
+# 假设 libcurl 自带 CMakeLists.txt 或你写了子模块 CMake
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/curl")
+target_link_libraries(AutoReplyPlugin PRIVATE libcurl)
 
 # 设置编译选项
 target_compile_options(AutoReplyPlugin PRIVATE
