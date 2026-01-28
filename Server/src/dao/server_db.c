@@ -26,5 +26,5 @@ int server_db_init(void)
         "CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);",
         "CREATE INDEX IF NOT EXISTS idx_friends_user ON friends(user_id);"
     };
-    return db_init("im_server.db", sizeof(sqls) / sizeof(sqls[0]));
+    return db_init("im_server.db", sqls, sizeof(sqls) / sizeof(sqls[0]));
 }

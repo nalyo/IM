@@ -13,5 +13,5 @@ int client_db_init(void)
         "CREATE INDEX IF NOT EXISTS idx_messages_to_user ON messages(to_user);",
         "CREATE INDEX IF NOT EXISTS idx_messages_from_user ON messages(from_user);"
     };
-    return db_init("im_server.db", sizeof(sqls) / sizeof(sqls[0]));
+    return db_init("im_server.db", sqls, sizeof(sqls) / sizeof(sqls[0]));
 }
