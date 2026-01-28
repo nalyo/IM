@@ -1,5 +1,4 @@
 #include "server_db.h"
-#include "db/db.h"
 
 int server_db_init(void)
 {
