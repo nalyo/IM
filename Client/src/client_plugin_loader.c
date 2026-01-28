@@ -112,7 +112,7 @@ void load_all_plugins(const char* subdir, client_app_t* app) {
         if (len > 3 && strcmp(entry->d_name + len - 3, ".so") == 0) {
             char path[1024];
             snprintf(path, sizeof(path), "%s/%s", plugin_dir, entry->d_name);
-            load_plugin(path);
+            load_plugin(full_path, app);
         }
     }
     closedir(dp);
