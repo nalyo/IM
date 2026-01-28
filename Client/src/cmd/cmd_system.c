@@ -1,4 +1,5 @@
 #include "cmd_common.h"
+#include "utils/parse.h"
 #include "im_protocol.h"
 #include "log.h"
 #include <stdio.h>
