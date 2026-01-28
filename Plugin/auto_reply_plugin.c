@@ -10,6 +10,11 @@
 
 #include <curl/curl.h>
 #include "cJSON.h"  // 需要把 cJSON.h/cJSON.c 放到项目里
+#ifdef _WIN32
+#define STRDUP _strdup
+#else
+#define STRDUP strdup
+#endif
 
 #define LLAMA_SERVER_IP "192.168.194.1"
 #define LLAMA_SERVER_PORT 8080
@@ -119,7 +124,7 @@ static void auto_reply_on_message(client_app_t* app,
     char* reply_text = query_llama(chat->message);
     if (!reply_text) {
         log_warn("[AutoReplyPlugin] Llama query failed, fallback to 'hello'");
-        reply_text = _strdup("hello");
+        reply_text = STRDUP("hello");
     }
 
     im_chat_msg_t resp = { 0 };
