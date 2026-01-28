@@ -104,7 +104,7 @@ static char* query_llama(const char* msg) {
     cJSON* content = cJSON_GetObjectItem(message, "content");
     if (!content || !cJSON_IsString(content)) { cJSON_Delete(root); return NULL; }
 
-    char* result = _strdup(content->valuestring); // Windows strdup
+    char* result = STRDUP(content->valuestring); // Windows strdup
     cJSON_Delete(root);
     return result;
 }
