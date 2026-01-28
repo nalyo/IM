@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 #include <curl/curl.h>
-#include "cJSON.h"  // 需要把 cJSON.h/cJSON.c 放到项目里
+#include "cJSON.h"
 #ifdef _WIN32
 #define STRDUP _strdup
 #else
@@ -18,6 +18,74 @@
 
 #define LLAMA_SERVER_IP "192.168.194.1"
 #define LLAMA_SERVER_PORT 8080
+
+#define MAX_HISTORY 10   // 保存最近 10 条消息
+
+// ------------------- 消息历史存储 -------------------
+typedef struct {
+    char* role;   // "user" 或 "assistant"
+    char* content;
+} chat_msg_t;
+
+typedef struct {
+    chat_msg_t msgs[MAX_HISTORY];
+    int count;
+} chat_history_t;
+
+static chat_history_t g_history = { 0 };
+
+// 添加消息到历史
+static void add_history(const char* role, const char* content) {
+    if (g_history.count == MAX_HISTORY) {
+        free(g_history.msgs[0].role);
+        free(g_history.msgs[0].content);
+        for (int i = 1; i < MAX_HISTORY; i++)
+            g_history.msgs[i - 1] = g_history.msgs[i];
+        g_history.count--;
+    }
+    g_history.msgs[g_history.count].role = STRDUP(role);
+    g_history.msgs[g_history.count].content = STRDUP(content);
+    g_history.count++;
+}
+
+// ------------------- JSON 转义 -------------------
+static char* json_escape(const char* str) {
+    size_t len = strlen(str);
+    char* out = malloc(len * 6 + 1); // 最坏情况每个字符都要转义
+    if (!out) return NULL;
+    char* p = out;
+    for (size_t i = 0; i < len; i++) {
+        switch (str[i]) {
+        case '\"': *p++ = '\\'; *p++ = '\"'; break;
+        case '\\': *p++ = '\\'; *p++ = '\\'; break;
+        case '\n': *p++ = '\\'; *p++ = 'n';  break;
+        case '\r': *p++ = '\\'; *p++ = 'r';  break;
+        case '\t': *p++ = '\\'; *p++ = 't';  break;
+        default: *p++ = str[i]; break;
+        }
+    }
+    *p = '\0';
+    return out;
+}
+
+// 构建 messages JSON
+static char* build_messages_json() {
+    char buffer[4096] = { 0 };
+    strcat(buffer, "[");
+    for (int i = 0; i < g_history.count; i++) {
+        char* escaped_content = json_escape(g_history.msgs[i].content);
+        char tmp[512];
+        snprintf(tmp, sizeof(tmp),
+            "{\"role\":\"%s\",\"content\":\"%s\"}%s",
+            g_history.msgs[i].role,
+            escaped_content,
+            (i == g_history.count - 1) ? "" : ",");
+        free(escaped_content);
+        strcat(buffer, tmp);
+    }
+    strcat(buffer, "]");
+    return STRDUP(buffer);  // 调用后需 free
+}
 
 // ------------------- curl 回调 -------------------
 struct string {
@@ -43,7 +111,7 @@ static size_t writefunc(void* ptr, size_t size, size_t nmemb, struct string* s) 
 }
 
 // ------------------- llama.cpp 调用 -------------------
-static char* query_llama(const char* msg) {
+static char* query_llama_with_json(const char* json_body) {
     CURL* curl;
     CURLcode res;
     struct string s;
@@ -58,14 +126,6 @@ static char* query_llama(const char* msg) {
 
     struct curl_slist* headers = NULL;
     headers = curl_slist_append(headers, "Content-Type: application/json");
-
-    // 构造 JSON 请求
-    char json_body[1024];
-    snprintf(json_body, sizeof(json_body),
-        "{"
-        "\"model\":\"local\","
-        "\"messages\":[{\"role\":\"user\",\"content\":\"%s\"}]"
-        "}", msg);
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json_body);
@@ -90,10 +150,7 @@ static char* query_llama(const char* msg) {
     if (!root) return NULL;
 
     cJSON* choices = cJSON_GetObjectItem(root, "choices");
-    if (!choices || !cJSON_IsArray(choices)) {
-        cJSON_Delete(root);
-        return NULL;
-    }
+    if (!choices || !cJSON_IsArray(choices)) { cJSON_Delete(root); return NULL; }
 
     cJSON* first = cJSON_GetArrayItem(choices, 0);
     if (!first) { cJSON_Delete(root); return NULL; }
@@ -104,7 +161,7 @@ static char* query_llama(const char* msg) {
     cJSON* content = cJSON_GetObjectItem(message, "content");
     if (!content || !cJSON_IsString(content)) { cJSON_Delete(root); return NULL; }
 
-    char* result = STRDUP(content->valuestring); // Windows strdup
+    char* result = STRDUP(content->valuestring);
     cJSON_Delete(root);
     return result;
 }
@@ -120,13 +177,29 @@ static void auto_reply_on_message(client_app_t* app,
     const im_chat_msg_t* chat = (const im_chat_msg_t*)body;
     if (strcmp(chat->from, app->username) == 0) return;
 
-    // 调用 llama.cpp
-    char* reply_text = query_llama(chat->message);
+    // 保存用户消息到历史
+    add_history("user", chat->message);
+
+    // 构建 JSON
+    char* msgs_json = build_messages_json();
+    char json_body[4096];
+    snprintf(json_body, sizeof(json_body),
+        "{\"model\":\"local\",\"messages\":%s, \"max_tokens\": 20}", msgs_json);
+    free(msgs_json);
+
+    log_debug(json_body);
+
+    // 调用 llama
+    char* reply_text = query_llama_with_json(json_body);
     if (!reply_text) {
         log_warn("[AutoReplyPlugin] Llama query failed, fallback to 'hello'");
         reply_text = STRDUP("hello");
     }
 
+    // 保存助手回复到历史
+    add_history("assistant", reply_text);
+
+    // 发送消息
     im_chat_msg_t resp = { 0 };
     SAFE_STRNCPY(resp.to, sizeof(resp.to), chat->from);
     SAFE_STRNCPY(resp.message, sizeof(resp.message), reply_text);

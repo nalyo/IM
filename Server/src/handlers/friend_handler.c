@@ -26,7 +26,7 @@ void handle_friend(client_info_t* client,
         else
             err = IM_ERR_USER_NOT_LOGGED_IN;
         const char* strerror = im_strerror(err);
-        printf("[FRIEND] add: %s, result: %s \n", client->username, strerror);
+        printf("[FRIEND] add: %s, result: %s \n", friend_name, strerror);
 
         // Ìî³ä·µ»Ø payload
         im_friend_info_t info;

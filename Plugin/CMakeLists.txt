@@ -18,6 +18,7 @@ target_include_directories(AutoReplyPlugin PRIVATE
 target_link_libraries(AutoReplyPlugin PRIVATE IM)
 target_link_libraries(AutoReplyPlugin PRIVATE logc)
 # 添加 cJSON
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/cJSON")
 target_link_libraries(AutoReplyPlugin PRIVATE cjson)
 # ===============================
@@ -68,6 +69,7 @@ file(MAKE_DIRECTORY ${PLUGIN_OUTPUT_DIR})
 
 # Windows 需要定义 DLL 导出符号
 if(WIN32)
+    target_link_libraries(AutoReplyPlugin PRIVATE ws2_32 wldap32 crypt32 normaliz)
     target_compile_definitions(AutoReplyPlugin PRIVATE BUILDING_DLL)
     # 设置输出目录为插件目录
     set_target_properties(AutoReplyPlugin PROPERTIES

@@ -23,7 +23,8 @@ int load_plugin(const char* path, client_app_t* app) {
     lib_handle handle = load_library(path);
     if (!handle) {
 #if defined(_WIN32) || defined(_WIN64)
-        log_error("LoadLibrary failed");
+        DWORD err = GetLastError();
+        log_error("LoadLibrary failed: %s, error code: %lu", path, err);
 #else
         log_error("dlopen failed: %s", dlerror());
 #endif
