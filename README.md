@@ -29,3 +29,22 @@ IM/
 ├── Server        # 服务端
 ├── IM            # 公共库（协议、工具、平台相关代码）
 └── vendor        # 第三方依赖（pthread、sqlite）
+
+---
+## 🔧 编译方式
+CMake
+```text
+mkdir build
+cd build
+cmake ..
+cmake --build .
+
+---
+## ▶ 运行方式
+1️⃣ 启动服务端
+```text
+./Server/server
+
+2️⃣ 启动客户端
+```text
+./Client/client
